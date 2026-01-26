@@ -1,76 +1,117 @@
 import java.util.Scanner;
+import java.util.Arrays;
 
-/**
- * Instructions:
- * - Complete the WeeklyData.java class first.
- * - Use this App class to collect user input and test your WeeklyData methods.
- * - Follow all TODOs carefully.
- * - Do NOT hard-code values — use loops and method calls.
- */
+class WeeklyDogWalkData {
+
+    private int[] minutes;
+
+    public WeeklyDogWalkData(int[] minutes) {
+        this.minutes = minutes;
+    }
+
+    public int getTotal() {
+        int total = 0;
+        for (int m : minutes) {
+            total += m;
+        }
+        return total;
+    }
+
+    public double getAverage() {
+        return (double) getTotal() / minutes.length;
+    }
+
+    public int getMin() {
+        return Arrays.stream(minutes).min().orElse(0);
+    }
+
+    public int getMax() {
+        return Arrays.stream(minutes).max().orElse(0);
+    }
+
+    public int getLongestWalkDayIndex() {
+        int max = minutes[0];
+        int index = 0;
+        for (int i = 1; i < minutes.length; i++) {
+            if (minutes[i] > max) {
+                max = minutes[i];
+                index = i;
+            }
+        }
+        return index;
+    }
+
+    @Override
+    public String toString() {
+        String[] days = {
+            "Monday", "Tuesday", "Wednesday",
+            "Thursday", "Friday", "Saturday", "Sunday"
+        };
+
+        StringBuilder sb = new StringBuilder("📅 Daily Walk Minutes:\n");
+        for (int i = 0; i < minutes.length; i++) {
+            sb.append(days[i]).append(": ").append(minutes[i]).append(" minutes\n");
+        }
+        return sb.toString();
+    }
+}
+
 public class App {
 
     public static void main(String[] args) {
 
-        // -------------------------------------------------------------
-        // TODO 1: Create a Scanner for user input
-        // -------------------------------------------------------------
+        Scanner scanner = new Scanner(System.in);
 
+        System.out.println("=================================");
+        System.out.println("🐕 Weekly Dog Walking Tracker");
+        System.out.println("Track how many minutes your dog walks each day!");
+        System.out.println("=================================\n");
 
-        // -------------------------------------------------------------
-        // TODO 2: Give information about your program
-        //         Ask the user about their goals (if applicable)
-        // -------------------------------------------------------------
+        int[] weekData = new int[7];
+        String[] days = {
+            "Monday", "Tuesday", "Wednesday",
+            "Thursday", "Friday", "Saturday", "Sunday"
+        };
 
+        // Collect data with validation
+        for (int i = 0; i < weekData.length; i++) {
+            System.out.print("Enter walking minutes for " + days[i] + ": ");
+            int minutes = scanner.nextInt();
 
-        // -------------------------------------------------------------
-        // TODO 3: Create an array to hold 7 days of data
-        //         Use an appropriate data type (int or double)
-        //         Name the array weekData
-        // -------------------------------------------------------------
+            while (minutes < 0) {
+                System.out.print("Minutes cannot be negative. Re-enter: ");
+                minutes = scanner.nextInt();
+            }
 
+            weekData[i] = minutes;
+        }
 
-        // -------------------------------------------------------------
-        // TODO 4: Use a for loop to collect data for each day of the week
-        //         Prompt example:
-        //         "Enter <data type> for day X: "
-        //
-        //         Include input validation:
-        //         - Use a while loop to prevent negative values
-        //         - Re-prompt if the value is invalid
-        // -------------------------------------------------------------
+        WeeklyDogWalkData data = new WeeklyDogWalkData(weekData);
 
+        System.out.println("\n📊 Weekly Summary");
+        System.out.println("---------------------------");
+        System.out.println("Total minutes walked: " + data.getTotal());
+        System.out.printf("Average minutes per day: %.2f\n", data.getAverage());
+        System.out.println("Shortest walk: " + data.getMin() + " minutes");
+        System.out.println("Longest walk: " + data.getMax() + " minutes");
 
-        // -------------------------------------------------------------
-        // TODO 5: Create a WeeklyData object
-        //         Pass the weekData array into the constructor
-        // -------------------------------------------------------------
+        int longestDayIndex = data.getLongestWalkDayIndex();
+        System.out.println("Longest walk day: " + days[longestDayIndex]);
 
+        System.out.println("\n" + data);
 
-        // -------------------------------------------------------------
-        // TODO 6: Display the results of the analysis
-        //         Call methods from WeeklyData to display:
-        //         - Total
-        //         - Average
-        //         - Minimum
-        //         - Maximum
-        //
-        //         Use clear labels and formatted output if needed
-        // -------------------------------------------------------------
+        // Useful insights
+        System.out.println("🧠 Weekly Insight:");
+        double avg = data.getAverage();
 
+        if (avg < 20) {
+            System.out.println("Your dog may need more exercise 🐾 Try longer walks!");
+        } else if (avg < 45) {
+            System.out.println("Good job! Your dog is getting healthy daily activity 👍");
+        } else {
+            System.out.println("Excellent! Your dog is very active and happy 💪🐕");
+        }
 
-        // -------------------------------------------------------------
-        // TODO 7: Display the full week of data
-        //         Use the toString() method from WeeklyData
-        // -------------------------------------------------------------
-
-
-        // -------------------------------------------------------------
-        // TODO 8: Give the user insights about their week
-        //         --> "You need to drink more water next week!"
-        //         --> "You were very hydrated this week!"
-        //         --> etc.
-        // -------------------------------------------------------------
-
-
+        scanner.close();
     }
 }

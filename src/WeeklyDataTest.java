@@ -38,7 +38,7 @@ class WeeklyDataTest {
                 originalTotal,
                 wd.getTotal(),
                 1e-9,
-                "WeeklyData must deep-copy the input array. External changes should not affect internal data."
+                "WeeklyData must deep-copy the input array."
         );
     }
 
@@ -100,4 +100,64 @@ class WeeklyDataTest {
     }
 
     @Test
-    v
+    void getMax_allSameValues() {
+        double[] input = {5, 5, 5};
+        WeeklyData wd = new WeeklyData(input);
+
+        assertEquals(5.0, wd.getMax(), 1e-9);
+    }
+
+    // -------------------------------------------------
+    // getMin Tests
+    // -------------------------------------------------
+    @Test
+    void getMin_typicalValues() {
+        double[] input = {10, 50, 30, 5, 25};
+        WeeklyData wd = new WeeklyData(input);
+
+        assertEquals(5.0, wd.getMin(), 1e-9);
+    }
+
+    @Test
+    void getMin_allSameValues() {
+        double[] input = {7, 7, 7};
+        WeeklyData wd = new WeeklyData(input);
+
+        assertEquals(7.0, wd.getMin(), 1e-9);
+    }
+
+    // -------------------------------------------------
+    // toString Tests
+    // -------------------------------------------------
+    @Test
+    void toString_containsAllDaysAndValues() {
+        double[] input = {10, 20, 30, 40, 50, 60, 70};
+        WeeklyData wd = new WeeklyData(input);
+
+        String result = wd.toString();
+
+        assertTrue(result.contains("Monday"));
+        assertTrue(result.contains("Tuesday"));
+        assertTrue(result.contains("Wednesday"));
+        assertTrue(result.contains("Thursday"));
+        assertTrue(result.contains("Friday"));
+        assertTrue(result.contains("Saturday"));
+        assertTrue(result.contains("Sunday"));
+
+        assertTrue(result.contains("10"));
+        assertTrue(result.contains("70"));
+    }
+
+    // -------------------------------------------------
+    // Optional Edge Case Tests
+    // -------------------------------------------------
+    @Disabled("Optional: enable only if empty arrays are supported")
+    @Test
+    void emptyArray_throwsException() {
+        double[] input = {};
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> new WeeklyData(input)
+        );
+    }
+}
